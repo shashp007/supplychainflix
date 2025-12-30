@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, Github, Mail, Phone, ChevronLeft, ChevronRight, Menu, X } from 'lucide-react';
+import { Search, Github, Mail, Phone, ChevronLeft, ChevronRight, Menu, X, Home } from 'lucide-react';
 
 // Data structure
 const contentData = {
@@ -318,7 +318,13 @@ const App = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrollPositions, setScrollPositions] = useState({});
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const scroll = (categoryId, direction) => {
     const container = document.getElementById(`row-${categoryId}`);
@@ -335,14 +341,14 @@ const App = () => {
     window.scrollTo(0, 0);
   };
 
-  // Navbar Component
+  // Navbar Component with Larger Personal Branding
   const Navbar = () => (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           <div className="flex items-center space-x-8">
             <div 
-              className="text-xl font-bold cursor-pointer"
+              className="text-2xl font-bold cursor-pointer"
               onClick={() => setCurrentPage('home')}
             >
               Supply<span className="text-red-600">Chain</span>Flix
@@ -385,14 +391,19 @@ const App = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <Search className="w-5 h-5 text-gray-400 hidden md:block" />
+          <div className="flex items-center space-x-6">
+            <Search className="w-5 h-5 text-gray-400 hidden lg:block" />
             <button
               onClick={() => setCurrentPage('about')}
-              className="hidden md:block text-right hover:opacity-80 transition-opacity cursor-pointer"
+              className="hidden md:flex items-center space-x-3 hover:opacity-90 transition-opacity cursor-pointer bg-gray-900/50 px-4 py-2 rounded-lg border border-gray-800 hover:border-red-600/30"
             >
-              <div className="font-semibold text-white">Shashwat Patel</div>
-              <div className="text-xs text-gray-400">Supply Chain • AI • Optimization</div>
+              <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center font-bold text-lg">
+                SP
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-white text-lg leading-tight">Shashwat Patel</div>
+                <div className="text-xs text-gray-400">Supply Chain • AI • Optimization</div>
+              </div>
             </button>
             
             <button
@@ -432,17 +443,31 @@ const App = () => {
     </nav>
   );
 
-  // Hero Section
+  // Hero Section with Simple Floating Particles (No Lag)
   const Hero = () => (
     <div className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Background with parallax - using a high-quality cinematic supply chain image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center transition-transform duration-100"
         style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600)',
+          backgroundImage: 'url(https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=1920&q=80)',
+          transform: `translateY(${scrollY * 0.5}px)`,
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/80 to-black" />
-      <div className="absolute inset-0 bg-gradient-radial from-transparent to-black/50" />
+      
+      {/* Enhanced dark overlays for better text contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/75 to-black" />
+      <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/30 to-black/70" />
+      
+      {/* Bottom vignette for stronger text pop */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+      
+      {/* Simplified animated floating particles */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="particle-simple particle-1"></div>
+        <div className="particle-simple particle-2"></div>
+        <div className="particle-simple particle-3"></div>
+      </div>
       
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
         <div className="inline-block px-4 py-1 bg-red-600/20 border border-red-600/50 rounded-full text-red-500 text-xs mb-6 font-semibold">
@@ -450,22 +475,68 @@ const App = () => {
         </div>
         
         <h1 className="text-6xl md:text-7xl font-bold mb-6 tracking-tight">
-          Supply<span className="text-red-600">Chain</span>Flix
+          Supply<span className="text-red-600 relative inline-block">
+            Chain
+            {/* Animated underline on "Chain" */}
+            <span className="absolute -bottom-2 left-0 h-1 bg-red-600 animate-expand-width"></span>
+          </span>Flix
         </h1>
         
-        <p className="text-2xl md:text-3xl text-gray-300 mb-6 font-light">
+        <p className="text-2xl md:text-3xl text-gray-200 mb-6 font-light">
           Where Supply Chains Think, Simulate, and Decide
         </p>
         
-        <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
           Enterprise planning capabilities spanning demand intelligence, supply optimization, 
           risk resilience, and AI-driven decision support — quantified across global operations.
         </p>
       </div>
+
+      <style jsx>{`
+        .particle-simple {
+          position: absolute;
+          width: 3px;
+          height: 3px;
+          background: rgba(229, 9, 20, 0.7);
+          border-radius: 50%;
+          box-shadow: 0 0 8px rgba(229, 9, 20, 0.6);
+        }
+        .particle-1 {
+          top: 30%;
+          left: 15%;
+          animation: float-simple 6s ease-in-out infinite;
+        }
+        .particle-2 {
+          top: 60%;
+          left: 75%;
+          animation: float-simple 8s ease-in-out infinite 1s;
+        }
+        .particle-3 {
+          top: 45%;
+          left: 50%;
+          animation: float-simple 7s ease-in-out infinite 0.5s;
+        }
+        @keyframes float-simple {
+          0%, 100% {
+            transform: translate(0, 0);
+          }
+          50% {
+            transform: translate(20px, -30px);
+          }
+        }
+        @keyframes expand-width {
+          0% { width: 0%; }
+          100% { width: 100%; }
+        }
+        .animate-expand-width {
+          width: 0%;
+          animation: expand-width 1s ease-out 0.3s forwards;
+        }
+      `}</style>
     </div>
   );
 
-  // Subcategory Card Component
+  // Subcategory Card Component with Smooth Hover
   const SubcategoryCard = ({ subcategory, category }) => (
     <div
       className="relative flex-shrink-0 w-80 h-48 rounded-lg overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105 hover:z-10"
@@ -476,7 +547,7 @@ const App = () => {
         backgroundPosition: 'center'
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent group-hover:from-black/90 group-hover:via-black/70 transition-all duration-300" />
       
       {subcategory.comingSoon && (
         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm">
@@ -490,7 +561,7 @@ const App = () => {
       
       <div className="absolute bottom-0 left-0 right-0 p-4">
         <h3 className="text-lg font-semibold mb-1">{subcategory.title}</h3>
-        <p className="text-sm text-gray-400 mb-2">{subcategory.teaser}</p>
+        <p className="text-sm text-gray-400 mb-2 group-hover:text-gray-300 transition-colors duration-300">{subcategory.teaser}</p>
         
         <div className="flex flex-wrap gap-2 mb-2">
           {subcategory.tags.map((tag, i) => (
@@ -542,58 +613,72 @@ const App = () => {
     </div>
   );
 
-  // Homepage Component
-  const HomePage = () => (
-    <div className="min-h-screen bg-black text-white">
-      <Hero />
-      
-      <div className="py-16 px-4 md:px-8 max-w-5xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6">What You'll Find Here</h2>
-        <p className="text-lg text-gray-400 leading-relaxed mb-4">
-          SupplyChainFlix is a capability catalog showcasing enterprise-scale supply chain intelligence 
-          across planning, optimization, risk, and analytics. Each capability is backed by quantified 
-          business outcomes and real-world implementation.
-        </p>
-        <p className="text-lg text-gray-400 leading-relaxed">
-          Explore 10 capability categories spanning S&OP, demand forecasting, inventory optimization, 
-          digital twins, and AI-driven decision support — all designed for executive-level decision making.
-        </p>
-      </div>
+  // Homepage Component with Fast, Smooth Animations
+  const HomePage = () => {
+    return (
+      <div className="min-h-screen bg-black text-white">
+        <Hero />
+        
+        <div className="py-16 px-4 md:px-8 max-w-5xl mx-auto">
+          <h2 className="text-3xl font-bold mb-6">What You'll Find Here</h2>
+          <p className="text-lg text-gray-400 leading-relaxed mb-4">
+            SupplyChainFlix is a capability catalog showcasing enterprise-scale supply chain intelligence 
+            across planning, optimization, risk, and analytics. Each capability is backed by quantified 
+            business outcomes and real-world implementation.
+          </p>
+          <p className="text-lg text-gray-400 leading-relaxed">
+            Explore 10 capability categories spanning S&OP, demand forecasting, inventory optimization, 
+            digital twins, and AI-driven decision support — all designed for executive-level decision making.
+          </p>
+        </div>
 
-      <div className="py-12">
-        {contentData.categories.map((category) => (
-          <CategoryRow key={category.id} category={category} />
-        ))}
-      </div>
+        <div className="py-12">
+          {contentData.categories.map((category) => (
+            <CategoryRow key={category.id} category={category} />
+          ))}
+        </div>
 
-      <div className="py-20 px-4 md:px-8">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">Impact Metrics</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-            {[
-              { label: 'Forecast Accuracy', value: '+23%' },
-              { label: 'Value Unlocked', value: '$600M+' },
-              { label: 'Cost Reduction', value: '34%' },
-              { label: 'Inventory Optimization', value: '$125M' },
-              { label: 'Decision Speed', value: '45% Faster' }
-            ].map((metric, i) => (
-              <div key={i} className="bg-gray-900 p-6 rounded-lg text-center border border-gray-800">
-                <div className="text-3xl font-bold text-red-600 mb-2">{metric.value}</div>
-                <div className="text-sm text-gray-400">{metric.label}</div>
-              </div>
-            ))}
+        <div className="py-20 px-4 md:px-8">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold mb-12 text-center">Impact Metrics</h2>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+              {[
+                { label: 'Forecast Accuracy', value: '+23%' },
+                { label: 'Value Unlocked', value: '$600M+' },
+                { label: 'Cost Reduction', value: '34%' },
+                { label: 'Inventory Optimization', value: '$125M' },
+                { label: 'Decision Speed', value: '45% Faster' }
+              ].map((metric, i) => (
+                <div 
+                  key={i} 
+                  className="bg-gray-900 p-6 rounded-lg text-center border border-gray-800 hover:border-red-600/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-600/10"
+                >
+                  <div className="text-3xl font-bold text-red-600 mb-2">{metric.value}</div>
+                  <div className="text-sm text-gray-400">{metric.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
-  // Subcategory Detail Page
+  // Subcategory Detail Page with Persistent Back Button
   const SubcategoryPage = () => {
     if (!selectedSubcategory || !selectedCategory) return null;
 
     return (
       <div className="min-h-screen bg-black text-white pt-20">
+        {/* Persistent Back/Home Button */}
+        <button
+          onClick={() => setCurrentPage('home')}
+          className="fixed top-20 left-4 z-40 bg-black/80 backdrop-blur-md border border-gray-800 hover:border-red-600/50 px-4 py-2 rounded-lg text-sm flex items-center space-x-2 transition-all hover:bg-gray-900"
+        >
+          <Home className="w-4 h-4" />
+          <span>Back to Home</span>
+        </button>
+
         <div
           className="relative h-80 flex items-end"
           style={{
@@ -604,13 +689,6 @@ const App = () => {
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
           <div className="relative z-10 p-8 max-w-6xl mx-auto w-full">
-            <button
-              onClick={() => setCurrentPage('home')}
-              className="text-sm text-gray-400 hover:text-white mb-4 flex items-center"
-            >
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              Back to Home
-            </button>
             <div className="text-sm text-gray-400 mb-2">
               {selectedCategory.title}
             </div>
@@ -729,16 +807,16 @@ const App = () => {
 
   // Contact Page
   const ContactPage = () => (
-    <div className="min-h-screen bg-black text-white pt-20 flex items-center justify-center">
-      <div className="text-center space-y-8">
-        <h1 className="text-4xl font-bold mb-12">Get In Touch</h1>
+    <div className="min-h-screen bg-black text-white pt-16 pb-16 flex items-center justify-center px-4">
+      <div className="text-center space-y-8 max-w-2xl w-full">
+        <h1 className="text-4xl md:text-5xl font-bold mb-12">Get In Touch</h1>
         
-        <div className="space-y-6">
+        <div className="space-y-8">
           <div>
             <div className="text-gray-400 text-sm mb-2">Email</div>
             <a
               href="mailto:shashpatelofficial@gmail.com"
-              className="text-2xl hover:text-red-600 transition-colors"
+              className="text-xl md:text-2xl hover:text-red-600 transition-colors block"
             >
               shashpatelofficial@gmail.com
             </a>
@@ -748,7 +826,7 @@ const App = () => {
             <div className="text-gray-400 text-sm mb-2">Phone</div>
             <a
               href="tel:+17162925922"
-              className="text-2xl hover:text-red-600 transition-colors"
+              className="text-xl md:text-2xl hover:text-red-600 transition-colors block"
             >
               +1-716-292-5922
             </a>
@@ -760,7 +838,7 @@ const App = () => {
               href="https://github.com/shashp007"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl hover:text-red-600 transition-colors inline-flex items-center"
+              className="text-xl md:text-2xl hover:text-red-600 transition-colors inline-flex items-center justify-center"
             >
               <Github className="w-6 h-6 mr-2" />
               github.com/shashp007
